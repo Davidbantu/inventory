@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAVINTOLA TANDOORI VILLA KALASATAMA - Purchase History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --secondary: #3B82F6;
+            --dark: #0F172A;
+            --darker: #020617;
+            --light: #E0E7FF;
+            --accent: #6366F1;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #020617;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #2563EB 100%);
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.4);
+            gap: 15px;
+        }
+        
+        .header .logo {
+            max-height: 50px;
+            min-width: auto;
+        }
+        
+        .header .header-center {
+            text-align: center;
+            min-width: 0;
+        }
+        
+        .header h1 {
+            font-size: clamp(0.85rem, 2vw, 1.3rem);
+            font-weight: 700;
+            margin: 0;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+        
+        .hamburger-menu {
+            position: relative;
+        }
+        
+        .hamburger-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .hamburger-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            min-width: 220px;
+            z-index: 1000;
+            display: none;
+            margin-top: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .hamburger-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hamburger-dropdown a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+        }
+        
+        .hamburger-dropdown a:last-child {
+            border-bottom: none;
+        }
+        
+        .hamburger-dropdown a:hover {
+            background: rgba(59, 130, 246, 0.2);
+            padding-left: 25px;
+        }
+        
+        .hamburger-dropdown a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .main-container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .filter-section {
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-section label {
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .filter-section select {
+            background: #020617;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        
+        .filter-section select:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        
+        .history-card {
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            border-color: #3B82F6;
+        }
+        
+        .history-card.expanded {
+            border-color: #6366F1;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .history-info {
+            flex: 1;
+        }
+        
+        .history-info h3 {
+            color: #3B82F6;
+            font-size: 1.1rem;
+            margin: 0 0 5px 0;
+        }
+        
+        .history-date {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .btn-history {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-copy {
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: #000;
+        }
+        
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        .history-items {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .history-items.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .history-note {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .history-note strong {
+            color: #3B82F6;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th, .history-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .history-table th {
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+            color: #3B82F6;
+            font-size: 0.85rem;
+        }
+        
+        .history-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .brand-footer {
+            background: #0F172A;
+            text-align: center;
+            padding: 15px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin-top: 30px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 2px solid #3B82F6;
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            border-radius: 13px 13px 0 0;
+            border-bottom: none;
+        }
+        
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+        
+        .modal-title {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            background: #020617;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .form-control:focus {
+            background: #0F172A;
+            border-color: #3B82F6;
+            color: white;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        }
+        
+        @media (max-width: 1024px) {
+            .header {
+                padding: 10px 15px;
+                gap: 10px;
+            }
+            
+            .header .logo {
+                max-height: 40px;
+            }
+            
+            .header h1 {
+                font-size: 1rem;
+            }
+            
+            .main-container {
+                padding: 15px;
+            }
+            
+            .filter-section {
+                padding: 15px;
+            }
+            
+            .history-card {
+                padding: 15px;
+            }
+            
+            .history-header {
+                flex-wrap: wrap;
+            }
+            
+            .history-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: auto 1fr auto;
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            
+            .header .logo {
+                max-height: 35px;
+            }
+            
+            .header h1 {
+                font-size: 0.85rem;
+                line-height: 1.2;
+            }
+            
+            .hamburger-btn {
+                padding: 8px 12px;
+                font-size: 1.3rem;
+            }
+            
+            .main-container {
+                padding: 10px;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px;
+            }
+            
+            .filter-section label {
+                margin-bottom: 5px;
+            }
+            
+            .filter-section select {
+                width: 100%;
+            }
+            
+            .history-card {
+                padding: 12px;
+            }
+            
+            .history-info h3 {
+                font-size: 1rem;
+            }
+            
+            .history-date {
+                font-size: 0.8rem;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .history-actions {
+                width: 100%;
+                justify-content: stretch;
+                margin-top: 10px;
+            }
+            
+            .history-actions button {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .history-table th, .history-table td {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 6px 10px;
+                gap: 6px;
+            }
+            
+            .header .logo {
+                max-height: 30px;
+            }
+            
+            .header h1 {
+                font-size: 0.75rem;
+            }
+            
+            .history-info h3 {
+                font-size: 0.95rem;
+            }
+            
+            .history-actions {
+                flex-wrap: wrap;
+            }
+            
+            .btn-history {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://weindragon.github.io/csmoneyone/logo_header.png" alt="Logo" class="logo">
+        <div class="header-center">
+            <h1>Purchase History</h1>
+        </div>
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" onclick="toggleHamburger()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="hamburger-dropdown" id="hamburgerDropdown">
+                <a href="index.html"><i class="bi bi-grid"></i> Dashboard</a>
+                <a href="startinventory.html"><i class="bi bi-clipboard-check"></i> Start Inventory</a>
+                <a href="purchasehistory.html"><i class="bi bi-clock-history"></i> Purchase History</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="filter-section">
+            <label><i class="bi bi-calendar"></i> Filter by Month:</label>
+            <select id="monthFilter" onchange="filterHistory()">
+                <option value="all">All Months</option>
+            </select>
+        </div>
+        
+        <div id="historyContainer">
+            <div class="empty-state">
+                <i class="bi bi-clock-history"></i>
+                <p>Loading purchase history...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="brand-footer">
+        <p>Developed by <strong style="color: #6366F1;">BDM1997</strong></p>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Purchase Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editRecordId">
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="editCategoryName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Note</label>
+                        <input type="text" class="form-control" id="editNote">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Items</label>
+                        <textarea class="form-control" id="editItems" rows="10" placeholder="Format: Item Name | Quantity Unit"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" style="background: #0F172A; border: 2px solid #3B82F6; color: white;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" style="background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); border: none; color: white;" onclick="saveEdit()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS1EqTC1E5IkxHyavOsdYEyhvSVBaa7YY",
+            authDomain: "restaurant-30ee9.firebaseapp.com",
+            databaseURL: "https://restaurant-30ee9-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "restaurant-30ee9",
+            storageBucket: "restaurant-30ee9.firebasestorage.app",
+            messagingSenderId: "774659563524",
+            appId: "1:774659563524:web:f9fb1f7cf830ab22879551",
+            measurementId: "G-81147GM14S"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let purchaseHistory = [];
+        let editModal;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            loadHistory();
+        });
+
+        function loadHistory() {
+            database.ref('purchaseHistory').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    purchaseHistory = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    purchaseHistory.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+                    populateMonthFilter();
+                    renderHistory();
+                } else {
+                    purchaseHistory = [];
+                    renderHistory();
+                }
+            });
+        }
+
+        function populateMonthFilter() {
+            const monthSet = new Set();
+            purchaseHistory.forEach(record => {
+                const date = new Date(record.submittedAt);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                monthSet.add(monthKey);
+            });
+            
+            const monthFilter = document.getElementById('monthFilter');
+            const currentValue = monthFilter.value;
+            monthFilter.innerHTML = '<option value="all">All Months</option>';
+            
+            const sortedMonths = Array.from(monthSet).sort().reverse();
+            sortedMonths.forEach(monthKey => {
+                const [year, month] = monthKey.split('-');
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                const monthName = monthNames[parseInt(month) - 1];
+                const option = document.createElement('option');
+                option.value = monthKey;
+                option.textContent = `${monthName} ${year}`;
+                monthFilter.appendChild(option);
+            });
+            
+            monthFilter.value = currentValue;
+        }
+
+        function filterHistory() {
+            renderHistory();
+        }
+
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            let suffix = 'th';
+            if (day === 1 || day === 21 || day === 31) suffix = 'st';
+            else if (day === 2 || day === 22) suffix = 'nd';
+            else if (day === 3 || day === 23) suffix = 'rd';
+            
+            return `${month} ${day}${suffix} ${year}`;
+        }
+
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyContainer');
+            const monthFilter = document.getElementById('monthFilter').value;
+            
+            let filteredHistory = purchaseHistory;
+            if (monthFilter !== 'all') {
+                filteredHistory = purchaseHistory.filter(record => {
+                    const date = new Date(record.submittedAt);
+                    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    return monthKey === monthFilter;
+                });
+            }
+            
+            if (filteredHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-clock-history"></i>
+                        <p>${monthFilter === 'all' ? 'No purchase history yet. Submit purchase lists to see them here!' : 'No records for this month.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredHistory.map(record => {
+                return `
+                    <div class="history-card" id="history-${record.id}" onclick="toggleItems('${record.id}')">
+                        <div class="history-header">
+                            <div class="history-info">
+                                <h3>${escapeHtml(record.categoryName)}</h3>
+                                <p class="history-date">${formatDate(record.submittedAt)} at ${formatTime(record.submittedAt)}</p>
+                            </div>
+                            <div class="history-actions" onclick="event.stopPropagation()">
+                                <button class="btn-history btn-copy" onclick="copyHistoryRecord('${record.id}')">
+                                    <i class="bi bi-clipboard"></i> Copy
+                                </button>
+                                <button class="btn-history btn-edit" onclick="editHistoryRecord('${record.id}')">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn-history btn-delete" onclick="deleteHistoryRecord('${record.id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="history-items" id="items-${record.id}">
+                            ${record.note ? `
+                                <div class="history-note">
+                                    <strong>Note:</strong> ${escapeHtml(record.note)}
+                                </div>
+                            ` : ''}
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${record.items.map(item => `
+                                        <tr>
+                                            <td>${escapeHtml(item.name)}</td>
+                                            <td>${item.quantity} ${item.unit}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleItems(recordId) {
+            const card = document.getElementById(`history-${recordId}`);
+            const itemsDiv = document.getElementById(`items-${recordId}`);
+            
+            card.classList.toggle('expanded');
+            itemsDiv.classList.toggle('show');
+        }
+
+        function copyHistoryRecord(historyId) {
+            const history = purchaseHistory.find(h => h.id === historyId);
+            if (history) {
+                let text = `${history.categoryName}\n`;
+                text += `Date: ${formatDate(history.submittedAt)} at ${formatTime(history.submittedAt)}\n`;
+                text += '--------------------------------\n';
+                text += 'Item Name | Quantity\n';
+                text += '--------------------------------\n';
+                history.items.forEach(item => {
+                    text += `${item.name} | ${item.quantity} ${item.unit}\n`;
+                });
+                if (history.note) {
+                    text += '--------------------------------\n';
+                    text += `Note: ${history.note}\n`;
+                }
+
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('History copied to clipboard!');
+                }).catch(err => {
+                    alert('Failed to copy: ' + err);
+                });
+            }
+        }
+
+        function editHistoryRecord(historyId) {
+            const history = purchaseHistory.find(h => h.id === historyId);
+            if (history) {
+                document.getElementById('editRecordId').value = historyId;
+                document.getElementById('editCategoryName').value = history.categoryName;
+                document.getElementById('editNote').value = history.note || '';
+                
+                const itemsText = history.items.map(item => `${item.name} | ${item.quantity} ${item.unit}`).join('\n');
+                document.getElementById('editItems').value = itemsText;
+                
+                editModal.show();
+            }
+        }
+
+        function saveEdit() {
+            const recordId = document.getElementById('editRecordId').value;
+            const categoryName = document.getElementById('editCategoryName').value.trim();
+            const note = document.getElementById('editNote').value.trim();
+            const itemsText = document.getElementById('editItems').value.trim();
+            
+            if (!categoryName) {
+                alert('Please enter a category name');
+                return;
+            }
+            
+            const items = itemsText.split('\n')
+                .filter(line => line.trim())
+                .map(line => {
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        const name = parts[0].trim();
+                        const quantityParts = parts[1].trim().split(' ');
+                        const quantity = parseInt(quantityParts[0]);
+                        const unit = quantityParts.slice(1).join(' ') || '';
+                        return { name, quantity, unit };
+                    }
+                    return null;
+                })
+                .filter(item => item !== null);
+            
+            if (items.length === 0) {
+                alert('Please add at least one item');
+                return;
+            }
+            
+            const originalRecord = purchaseHistory.find(h => h.id === recordId);
+            const updatedRecord = {
+                categoryName,
+                note,
+                items,
+                submittedAt: originalRecord.submittedAt
+            };
+            
+            database.ref(`purchaseHistory/${recordId}`).update(updatedRecord).then(() => {
+                showNotification('Record updated successfully!');
+                editModal.hide();
+            }).catch(err => {
+                alert('Failed to update: ' + err);
+            });
+        }
+
+        function deleteHistoryRecord(historyId) {
+            if (confirm('Are you sure you want to delete this history record?')) {
+                database.ref(`purchaseHistory/${historyId}`).remove();
+                showNotification('History record deleted!');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `<i class="bi bi-check-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function toggleHamburger() {
+            const dropdown = document.getElementById('hamburgerDropdown');
+            dropdown.classList.toggle('show');
+        }
+        
+        document.addEventListener('click', function(event) {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const dropdown = document.getElementById('hamburgerDropdown');
+            if (!hamburgerMenu.contains(event.target) && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
