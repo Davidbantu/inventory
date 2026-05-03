@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAVINTOLA TANDOORI VILLA KALASATAMA - Inventory Mode</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --secondary: #3B82F6;
+            --dark: #0F172A;
+            --darker: #020617;
+            --light: #E0E7FF;
+            --accent: #6366F1;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #020617;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #2563EB 100%);
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.4);
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .header .logo {
+            max-height: 50px;
+            min-width: auto;
+        }
+        
+        .header .header-center {
+            text-align: center;
+            min-width: 0;
+        }
+        
+        .header h1 {
+            font-size: clamp(0.85rem, 2vw, 1.3rem);
+            font-weight: 700;
+            margin: 0;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+        
+        .hamburger-menu {
+            position: relative;
+        }
+        
+        .hamburger-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .hamburger-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            min-width: 220px;
+            z-index: 1000;
+            display: none;
+            margin-top: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .hamburger-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hamburger-dropdown a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+        }
+        
+        .hamburger-dropdown a:last-child {
+            border-bottom: none;
+        }
+        
+        .hamburger-dropdown a:hover {
+            background: rgba(59, 130, 246, 0.2);
+            padding-left: 25px;
+        }
+        
+        .hamburger-dropdown a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            
+            .header .logo {
+                max-height: 35px;
+                width: auto;
+            }
+            
+            .header h1 {
+                font-size: 0.78rem;
+                line-height: 1.25;
+            }
+            
+            .hamburger-btn {
+                padding: 8px 12px;
+                font-size: 1.3rem;
+                min-width: 40px;
+                min-height: 40px;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .header h1 {
+                font-size: 1rem;
+            }
+            
+            .hamburger-btn {
+                padding: 10px 15px;
+                font-size: 1.4rem;
+            }
+        }
+        
+        .header .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .header .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .main-container {
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        
+        .category-tab {
+            background: #0F172A;
+            border: 2px solid #3B82F6;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .category-tab:hover,
+        .category-tab.active {
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            border-color: #3B82F6;
+        }
+        
+        .inventory-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+        
+        .items-sidebar {
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .items-sidebar h3 {
+            color: #3B82F6;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .sidebar-item {
+            padding: 12px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            border-color: #3B82F6;
+        }
+        
+        .sidebar-item .item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .sidebar-item .item-status {
+            font-size: 0.8rem;
+        }
+        
+        .sidebar-item .item-status.added {
+            color: #10B981;
+        }
+        
+        .sidebar-item .item-status.pending {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .item-detail {
+            background: linear-gradient(135deg, #0F172A 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .item-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .item-detail-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3B82F6;
+        }
+        
+        .item-detail-quantity {
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        
+        .quantity-section {
+            margin-bottom: 25px;
+        }
+        
+        .quantity-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #0F172A;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            width: fit-content;
+        }
+        
+        .quantity-control button {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-control button:hover {
+            background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+            transform: scale(1.05);
+        }
+        
+        .quantity-control input {
+            width: 100px;
+            text-align: center;
+            background: #020617;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .order-section {
+            margin-bottom: 25px;
+        }
+        
+        .order-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-inventory {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #0F172A;
+            border: 2px solid #3B82F6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border: none;
+            color: #000;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        .footer {
+            background: #0F172A;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            margin-top: 30px;
+        }
+        
+        .footer-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .brand-footer {
+            background: #0F172A;
+            text-align: center;
+            padding: 15px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: rgba(59, 130, 246, 0.3);
+        }
+        
+        @media (max-width: 1024px) {
+            .inventory-layout {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .items-sidebar {
+                max-height: 250px;
+                overflow-y: auto;
+            }
+            
+            .item-detail {
+                padding: 20px;
+            }
+            
+            .quantity-control {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .quantity-control input {
+                width: 80px;
+            }
+            
+            .quantity-control button {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: auto 1fr auto;
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            
+            .header .logo {
+                max-height: 35px;
+            }
+            
+            .header h1 {
+                font-size: 0.85rem;
+                line-height: 1.2;
+            }
+            
+            .hamburger-btn {
+                padding: 8px 12px;
+                font-size: 1.3rem;
+            }
+            
+            .main-container {
+                padding: 10px;
+            }
+            
+            .category-tabs {
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+            
+            .category-tab {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .inventory-layout {
+                gap: 12px;
+            }
+            
+            .items-sidebar {
+                max-height: 200px;
+                padding: 12px;
+            }
+            
+            .items-sidebar h3 {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
+            
+            .sidebar-item {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .item-detail {
+                padding: 15px;
+            }
+            
+            .item-detail h2 {
+                font-size: 1.2rem;
+            }
+            
+            .quantity-control {
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .quantity-control button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .quantity-control input {
+                width: 70px;
+                padding: 8px;
+                font-size: 1.1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 24px;
+            }
+            
+            .footer {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .footer-buttons {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .footer-buttons button {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 6px 10px;
+                gap: 6px;
+            }
+            
+            .header .logo {
+                max-height: 30px;
+            }
+            
+            .header h1 {
+                font-size: 0.75rem;
+            }
+            
+            .category-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .category-tab {
+                flex: 1 1 calc(50% - 4px);
+                min-width: 0;
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+            
+            .items-sidebar {
+                max-height: 180px;
+            }
+            
+            .sidebar-item {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .item-detail {
+                padding: 12px;
+            }
+            
+            .quantity-control button {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
+            .quantity-control input {
+                width: 60px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://weindragon.github.io/csmoneyone/logo_header.png" alt="Logo" class="logo">
+        <div class="header-center">
+            <h1>Inventory Mode</h1>
+        </div>
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" onclick="toggleHamburger()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="hamburger-dropdown" id="hamburgerDropdown">
+                <a href="index.html"><i class="bi bi-grid"></i> Dashboard</a>
+                <a href="startinventory.html"><i class="bi bi-clipboard-check"></i> Start Inventory</a>
+                <a href="purchasehistory.html"><i class="bi bi-clock-history"></i> Purchase History</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="category-tabs" id="categoryTabs">
+            <div class="empty-state" style="grid-column: 1 / -1; padding: 20px;">
+                Loading categories...
+            </div>
+        </div>
+
+        <div class="inventory-layout" id="inventoryLayout">
+            <div class="items-sidebar">
+                <h3><i class="bi bi-list-ul"></i> Items</h3>
+                <div id="itemsSidebar">
+                    <div class="empty-state">
+                        <p>Select a category to see items</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-detail" id="itemDetail">
+                <div class="empty-state">
+                    <i class="bi bi-box-seam"></i>
+                    <p>Select an item from the sidebar to view details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-buttons">
+            <button class="btn-inventory btn-warning" onclick="saveAndHold()">
+                <i class="bi bi-save"></i> Save & Hold
+            </button>
+            <button class="btn-inventory btn-success" onclick="inventoryDone()">
+                <i class="bi bi-check-circle"></i> Inventory Done
+            </button>
+        </div>
+    </div>
+    
+    <div class="brand-footer">
+        <p>Developed by <strong style="color: #6366F1;">BDM1997</strong></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS1EqTC1E5IkxHyavOsdYEyhvSVBaa7YY",
+            authDomain: "restaurant-30ee9.firebaseapp.com",
+            databaseURL: "https://restaurant-30ee9-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "restaurant-30ee9",
+            storageBucket: "restaurant-30ee9.firebasestorage.app",
+            messagingSenderId: "774659563524",
+            appId: "1:774659563524:web:f9fb1f7cf830ab22879551",
+            measurementId: "G-81147GM14S"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let categories = [];
+        let items = [];
+        let purchaseList = [];
+        let currentCategory = null;
+        let currentItem = null;
+        let addedItemIds = new Set();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
+
+        function loadData() {
+            database.ref('categories').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    categories = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    renderCategoryTabs();
+                    if (categories.length > 0) {
+                        currentCategory = categories[0].id;
+                        renderCategoryTabs();
+                        loadCategoryItems(currentCategory);
+                    }
+                }
+            });
+
+            database.ref('items').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    if (currentCategory) {
+                        loadCategoryItems(currentCategory);
+                    }
+                }
+            });
+
+            database.ref('purchaseList').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    purchaseList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    updateAddedItems();
+                }
+            });
+        }
+
+        function renderCategoryTabs() {
+            const container = document.getElementById('categoryTabs');
+            container.innerHTML = categories.map(category => `
+                <button class="category-tab ${currentCategory === category.id ? 'active' : ''}" 
+                        onclick="selectCategory('${category.id}')">
+                    ${escapeHtml(category.name)}
+                </button>
+            `).join('');
+        }
+
+        function selectCategory(categoryId) {
+            currentCategory = categoryId;
+            currentItem = null;
+            renderCategoryTabs();
+            loadCategoryItems(categoryId);
+        }
+
+        function loadCategoryItems(categoryId) {
+            const categoryItems = items.filter(item => item.categoryId === categoryId);
+            const sidebar = document.getElementById('itemsSidebar');
+            
+            if (categoryItems.length === 0) {
+                sidebar.innerHTML = '<div class="empty-state"><p>No items in this category</p></div>';
+                document.getElementById('itemDetail').innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-box-seam"></i>
+                        <p>No items in this category</p>
+                    </div>
+                `;
+                return;
+            }
+
+            sidebar.innerHTML = categoryItems.map(item => {
+                const isAdded = addedItemIds.has(item.id);
+                return `
+                    <div class="sidebar-item ${currentItem?.id === item.id ? 'active' : ''}" 
+                         onclick="selectItem('${item.id}')">
+                        <span class="item-name">${escapeHtml(item.name)}</span>
+                        <span class="item-status ${isAdded ? 'added' : 'pending'}">
+                            ${isAdded ? '<i class="bi bi-check-circle-fill"></i>' : '<i class="bi bi-circle"></i>'}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            if (!currentItem && categoryItems.length > 0) {
+                selectItem(categoryItems[0].id);
+            }
+        }
+
+        function selectItem(itemId) {
+            currentItem = items.find(i => i.id === itemId);
+            loadCategoryItems(currentCategory);
+            renderItemDetail();
+        }
+
+        function renderItemDetail() {
+            const detail = document.getElementById('itemDetail');
+            
+            if (!currentItem) {
+                detail.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-box-seam"></i>
+                        <p>Select an item from the sidebar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            detail.innerHTML = `
+                <div class="item-detail-header">
+                    <div class="item-detail-name">${escapeHtml(currentItem.name)}</div>
+                    <div class="item-detail-quantity">${currentItem.quantity} ${currentItem.unit}</div>
+                </div>
+                
+                <div class="quantity-section">
+                    <label><i class="bi bi-box"></i> Available Quantity</label>
+                    <div class="quantity-control">
+                        <button onclick="updateQuantity(-1)">-</button>
+                        <input type="number" id="currentQuantity" value="${currentItem.quantity}" 
+                               onchange="setQuantity(this.value)" min="0">
+                        <button onclick="updateQuantity(1)">+</button>
+                    </div>
+                </div>
+                
+                <div class="order-section">
+                    <label><i class="bi bi-cart-plus"></i> Need to Order</label>
+                    <div class="quantity-control">
+                        <button onclick="updateOrderQuantity(-1)">-</button>
+                        <input type="number" id="orderQuantity" placeholder="0" min="0" value="0">
+                        <button onclick="updateOrderQuantity(1)">+</button>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-inventory btn-primary" onclick="addToPurchaseList()">
+                        <i class="bi bi-cart-plus"></i> Add to Purchase List
+                    </button>
+                    <button class="btn-inventory btn-secondary" onclick="nextItem()">
+                        <i class="bi bi-skip-forward"></i> Next Item
+                    </button>
+                    <button class="btn-inventory btn-success" onclick="markStocked()">
+                        <i class="bi bi-check-circle"></i> Stock OK
+                    </button>
+                </div>
+            `;
+        }
+
+        function updateQuantity(change) {
+            if (currentItem) {
+                const newQuantity = Math.max(0, currentItem.quantity + change);
+                currentItem.quantity = newQuantity;
+                document.getElementById('currentQuantity').value = newQuantity;
+                database.ref(`items/${currentItem.id}`).update({ quantity: newQuantity });
+                loadCategoryItems(currentCategory);
+            }
+        }
+
+        function setQuantity(value) {
+            if (currentItem) {
+                const newQuantity = Math.max(0, parseInt(value) || 0);
+                currentItem.quantity = newQuantity;
+                database.ref(`items/${currentItem.id}`).update({ quantity: newQuantity });
+                loadCategoryItems(currentCategory);
+            }
+        }
+
+        function updateOrderQuantity(change) {
+            const input = document.getElementById('orderQuantity');
+            const currentValue = parseInt(input.value) || 0;
+            input.value = Math.max(0, currentValue + change);
+        }
+
+        function addToPurchaseList() {
+            if (!currentItem) return;
+            
+            const orderQty = parseInt(document.getElementById('orderQuantity').value) || 0;
+            
+            if (orderQty < 1) {
+                alert('Please enter a quantity to order');
+                return;
+            }
+
+            const purchaseItem = {
+                itemId: currentItem.id,
+                name: currentItem.name,
+                quantity: orderQty,
+                unit: currentItem.unit,
+                categoryId: currentItem.categoryId,
+                status: 'pending',
+                addedAt: new Date().toISOString(),
+                submittedAt: new Date().toISOString()
+            };
+            
+            database.ref('purchaseList').push(purchaseItem);
+            addedItemIds.add(currentItem.id);
+            showNotification(`${currentItem.name} (${orderQty} ${currentItem.unit}) added to purchase list!`);
+            document.getElementById('orderQuantity').value = 0;
+            loadCategoryItems(currentCategory);
+            nextItem();
+        }
+
+        function markStocked() {
+            if (currentItem) {
+                showNotification(`${currentItem.name} marked as stocked!`);
+                nextItem();
+            }
+        }
+
+        function nextItem() {
+            const categoryItems = items.filter(item => item.categoryId === currentCategory);
+            const currentIndex = categoryItems.findIndex(i => i.id === currentItem?.id);
+            
+            if (currentIndex < categoryItems.length - 1) {
+                selectItem(categoryItems[currentIndex + 1].id);
+            } else {
+                const currentCatIndex = categories.findIndex(c => c.id === currentCategory);
+                if (currentCatIndex < categories.length - 1) {
+                    selectCategory(categories[currentCatIndex + 1].id);
+                } else {
+                    alert('Inventory complete for all categories!');
+                }
+            }
+        }
+
+        function updateAddedItems() {
+            addedItemIds = new Set(purchaseList.map(p => p.itemId));
+            if (currentCategory) {
+                loadCategoryItems(currentCategory);
+            }
+        }
+
+        function saveAndHold() {
+            showNotification('Inventory saved! You can continue later.');
+        }
+
+        function inventoryDone() {
+            purchaseList.forEach(item => {
+                if (item.status === 'pending') {
+                    database.ref(`purchaseList/${item.id}`).update({ status: 'done' });
+                }
+            });
+            showNotification('Inventory marked as done! All purchase items marked as completed.');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `<i class="bi bi-check-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function toggleHamburger() {
+            const dropdown = document.getElementById('hamburgerDropdown');
+            dropdown.classList.toggle('show');
+        }
+        
+        // Close hamburger when clicking outside
+        document.addEventListener('click', function(event) {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const dropdown = document.getElementById('hamburgerDropdown');
+            if (!hamburgerMenu.contains(event.target) && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
