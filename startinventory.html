@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RAVINTOLA TANDOORI VILLA KALASATAMA - Inventory Mode</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -26,6 +26,7 @@
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            touch-action: manipulation;
         }
         
         .header {
@@ -878,6 +879,23 @@
                     </div>
                 </div>
                 
+                ${(() => {
+                    const existingItem = purchaseList.find(p => p.itemId === currentItem.id);
+                    if (existingItem) {
+                        return `
+                        <div class="purchase-info-section" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 12px; margin-bottom: 20px;">
+                            <label style="color: #10B981; font-weight: 600; margin-bottom: 5px; display: block;">
+                                <i class="bi bi-cart-check"></i> Already in Purchase List
+                            </label>
+                            <div style="color: rgba(255,255,255,0.9); font-size: 0.95rem;">
+                                Current quantity: <strong style="color: #10B981;">${existingItem.quantity} ${existingItem.unit}</strong>
+                            </div>
+                        </div>
+                        `;
+                    }
+                    return '';
+                })()}
+                
                 <div class="order-section">
                     <label><i class="bi bi-cart-plus"></i> Need to Order</label>
                     <div class="quantity-control">
@@ -889,7 +907,10 @@
                 
                 <div class="action-buttons">
                     <button class="btn-inventory btn-primary" onclick="addToPurchaseList()">
-                        <i class="bi bi-cart-plus"></i> Add to Purchase List
+                        <i class="bi bi-cart-plus"></i> ${(() => {
+                            const existingItem = purchaseList.find(p => p.itemId === currentItem.id);
+                            return existingItem ? 'Update Purchase List' : 'Add to Purchase List';
+                        })()}
                     </button>
                     <button class="btn-inventory btn-secondary" onclick="nextItem()">
                         <i class="bi bi-skip-forward"></i> Next Item
@@ -936,20 +957,35 @@
                 return;
             }
 
-            const purchaseItem = {
-                itemId: currentItem.id,
-                name: currentItem.name,
-                quantity: orderQty,
-                unit: currentItem.unit,
-                categoryId: currentItem.categoryId,
-                status: 'pending',
-                addedAt: new Date().toISOString(),
-                submittedAt: new Date().toISOString()
-            };
+            // Check if item already exists in purchase list
+            const existingItem = purchaseList.find(p => p.itemId === currentItem.id);
             
-            database.ref('purchaseList').push(purchaseItem);
-            addedItemIds.add(currentItem.id);
-            showNotification(`${currentItem.name} (${orderQty} ${currentItem.unit}) added to purchase list!`);
+            if (existingItem) {
+                // Update existing item quantity
+                const newQuantity = existingItem.quantity + orderQty;
+                database.ref(`purchaseList/${existingItem.id}`).update({
+                    quantity: newQuantity,
+                    addedAt: new Date().toISOString()
+                });
+                showNotification(`${currentItem.name} updated! (${newQuantity} ${currentItem.unit} in purchase list)`);
+            } else {
+                // Add new item to purchase list
+                const purchaseItem = {
+                    itemId: currentItem.id,
+                    name: currentItem.name,
+                    quantity: orderQty,
+                    unit: currentItem.unit,
+                    categoryId: currentItem.categoryId,
+                    status: 'pending',
+                    addedAt: new Date().toISOString(),
+                    submittedAt: new Date().toISOString()
+                };
+                
+                database.ref('purchaseList').push(purchaseItem);
+                addedItemIds.add(currentItem.id);
+                showNotification(`${currentItem.name} added to purchase list! (${orderQty} ${currentItem.unit})`);
+            }
+            
             document.getElementById('orderQuantity').value = 0;
             loadCategoryItems(currentCategory);
             nextItem();
